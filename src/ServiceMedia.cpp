@@ -11,6 +11,7 @@
 #include "soapMediaBindingService.h"
 #include "ServiceContext.h"
 #include "smacros.h"
+#include "wsseapi.h"
 
 
 
@@ -22,6 +23,15 @@ int MediaBindingService::GetServiceCapabilities(_trt__GetServiceCapabilities *tr
 
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
+
     trt__GetServiceCapabilitiesResponse.Capabilities = ctx->getMediaServiceCapabilities(this->soap);
 
 
@@ -36,6 +46,14 @@ int MediaBindingService::GetVideoSources(_trt__GetVideoSources *trt__GetVideoSou
 
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
 
     auto profiles = ctx->get_profiles();
 
@@ -82,6 +100,15 @@ int MediaBindingService::GetProfile(_trt__GetProfile *trt__GetProfile, _trt__Get
     int ret = SOAP_FAULT;
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
+
     auto profiles       = ctx->get_profiles();
     auto it             = profiles.find(trt__GetProfile->ProfileToken);
 
@@ -104,6 +131,14 @@ int MediaBindingService::GetProfiles(_trt__GetProfiles *trt__GetProfiles, _trt__
 
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
 
     auto profiles = ctx->get_profiles();
 
@@ -599,6 +634,15 @@ int MediaBindingService::GetStreamUri(_trt__GetStreamUri *trt__GetStreamUri, _tr
     int ret = SOAP_FAULT;
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
+
     auto profiles       = ctx->get_profiles();
     auto it             = profiles.find(trt__GetStreamUri->ProfileToken);
 
@@ -648,6 +692,15 @@ int MediaBindingService::GetSnapshotUri(_trt__GetSnapshotUri *trt__GetSnapshotUr
     int ret = SOAP_FAULT;
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
+
     auto profiles       = ctx->get_profiles();
     auto it             = profiles.find(trt__GetSnapshotUri->ProfileToken);
 

@@ -11,7 +11,7 @@
 #include "soapPTZBindingService.h"
 #include "ServiceContext.h"
 #include "smacros.h"
-
+#include "wsseapi.h"
 
 
 int PTZBindingService::GetServiceCapabilities(_tptz__GetServiceCapabilities *tptz__GetServiceCapabilities, _tptz__GetServiceCapabilitiesResponse &tptz__GetServiceCapabilitiesResponse)
@@ -79,6 +79,14 @@ int PTZBindingService::GotoPreset(_tptz__GotoPreset *tptz__GotoPreset, _tptz__Go
     DEBUG_MSG("PTZ: %s\n", __FUNCTION__);
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
 
     if (tptz__GotoPreset == NULL) {
         return SOAP_OK;
@@ -235,6 +243,14 @@ int PTZBindingService::GotoHomePosition(_tptz__GotoHomePosition *tptz__GotoHomeP
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
 
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
+
     // Go to preset 1
     sprintf(cmd, "%s 1", ctx->get_ptz_node()->get_move_preset().c_str());
     system(cmd);
@@ -253,6 +269,14 @@ int PTZBindingService::ContinuousMove(_tptz__ContinuousMove *tptz__ContinuousMov
     DEBUG_MSG("PTZ: %s\n", __FUNCTION__);
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
 
     if (tptz__ContinuousMove == NULL) {
         return SOAP_OK;
@@ -283,6 +307,14 @@ int PTZBindingService::RelativeMove(_tptz__RelativeMove *tptz__RelativeMove, _tp
     DEBUG_MSG("PTZ: %s\n", __FUNCTION__);
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
 
     if (tptz__RelativeMove == NULL) {
         return SOAP_OK;
@@ -333,6 +365,14 @@ int PTZBindingService::Stop(_tptz__Stop *tptz__Stop, _tptz__StopResponse &tptz__
     DEBUG_MSG("PTZ: %s\n", __FUNCTION__);
 
     ServiceContext* ctx = (ServiceContext*)this->soap->user;
+
+    const char *username = soap_wsse_get_Username(this->soap);
+    if (!username)
+        return this->soap->error;
+    if (ctx->user != username)
+        return SOAP_FAULT;
+    if (soap_wsse_verify_Password(this->soap, ctx->password.c_str()))
+        return this->soap->error;
 
     system(ctx->get_ptz_node()->get_move_stop().c_str());
 
